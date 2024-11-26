@@ -1,5 +1,0 @@
-/home/e/Documents/tek3/github/t/build/CMakeFiles/rtype_server.dir
-/home/e/Documents/tek3/github/t/build/CMakeFiles/server_test.dir
-/home/e/Documents/tek3/github/t/build/CMakeFiles/test.dir
-/home/e/Documents/tek3/github/t/build/CMakeFiles/edit_cache.dir
-/home/e/Documents/tek3/github/t/build/CMakeFiles/rebuild_cache.dir
