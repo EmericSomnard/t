@@ -1,6 +1,4 @@
 #include <iostream>
-#include <thread>
-#include <chrono>
 #include <boost/asio.hpp>
 
 using boost::asio::ip::tcp;
@@ -8,21 +6,20 @@ using boost::asio::ip::tcp;
 void start_server() {
     try {
         boost::asio::io_context io_context;
+        tcp::acceptor acceptor(io_context, tcp::endpoint(tcp::v4(), 47920));
+        std::cout << "Server is running on port 57920..." << std::endl;
 
-        // Create an endpoint listening on port 12345
-        tcp::acceptor acceptor(io_context, tcp::endpoint(tcp::v4(), 57920));
-        std::cout << "Server is running on port 12345..." << std::endl;
+        tcp::socket socket(io_context);
+        acceptor.accept(socket);
+        std::cout << "Client connected!" << std::endl;
 
-        while (true) {
-            // Accept a connection
-            tcp::socket socket(io_context);
-            acceptor.accept(socket);
-            std::cout << "Client connected!" << std::endl;
+        std::string message = "Hello from the server!\n";
+        boost::asio::write(socket, boost::asio::buffer(message));
+        std::cout << "Message sent to the client: " << message << std::endl;
 
-            // Send a welcome message
-            std::string message = "Hello from the server!\n";
-            boost::asio::write(socket, boost::asio::buffer(message));
-        }
+        socket.close();
+        std::cout << "Connection closed with client." << std::endl;
+
     } catch (std::exception &e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }

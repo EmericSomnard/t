@@ -1,18 +1,33 @@
 #include <iostream>
-#include <thread>
 #include <boost/asio.hpp>
 #include <cassert>
+#include <thread>
+#include <chrono>
 
 using boost::asio::ip::tcp;
 
 void test_server() {
     try {
-        // Connect to the server
         boost::asio::io_context io_context;
         tcp::socket socket(io_context);
-        socket.connect(tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 57920));
 
-        // Read response
+        bool connected = false;
+        for (int i = 0; i < 5; ++i) {
+            try {
+                socket.connect(tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 47920));
+                connected = true;
+                break;
+            } catch (const boost::system::system_error& e) {
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+                std::cout << "Tentative de connexion échouée, réessaye..." << std::endl;
+            }
+        }
+
+        if (!connected) {
+            std::cerr << "Erreur: Impossible de se connecter au serveur." << std::endl;
+            return;
+        }
+
         boost::asio::streambuf buffer;
         boost::asio::read_until(socket, buffer, "\n");
 
@@ -20,9 +35,11 @@ void test_server() {
         std::string response;
         std::getline(is, response);
 
-        // Check response
         assert(response == "Hello from the server!");
         std::cout << "Test passed: Received correct response from the server!" << std::endl;
+
+        socket.close();
+        std::cout << "Connexion fermée proprement." << std::endl;
 
     } catch (std::exception &e) {
         std::cerr << "Test failed: " << e.what() << std::endl;
@@ -33,18 +50,13 @@ void test_server() {
 int main() {
     std::cout << "Starting server test..." << std::endl;
 
-    // Run the server in a separate thread
     std::thread server_thread([] {
-        std::system("./rtype_server &"); // Assuming the server binary is named `rtype_server`
+        std::system("./server_test");
     });
 
-    // Give the server some time to start
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-
-    // Run the test
     test_server();
 
-    // Clean up
-    server_thread.detach(); // In production, you'd want a cleaner shutdown mechanism
+    server_thread.join();
+
     return 0;
 }
