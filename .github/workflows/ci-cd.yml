@@ -34,11 +34,10 @@ jobs:
           cmake ..
           make
 
-      # Run tests with verbose output
       - name: Run Tests
         run: |
           cd build
-          ctest -V  # Run tests with verbose output
+          ctest -V
 
 
 
@@ -57,5 +56,5 @@ jobs:
           sudo apt-get install -y
       - name: Deploy to Local Server
         run: |
-          cp -r ./* ../deploy
+          cp -r ./* ./deploy
           ./start-server.sh
