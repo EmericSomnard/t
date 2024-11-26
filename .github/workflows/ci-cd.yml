@@ -49,6 +49,9 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+      - name: Build Project
+        run: |
+          mkdir build
 
       - name: Install Deployment Tools
         run: |
