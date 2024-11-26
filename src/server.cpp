@@ -6,7 +6,7 @@ using boost::asio::ip::tcp;
 void start_server() {
     try {
         boost::asio::io_context io_context;
-        tcp::acceptor acceptor(io_context, tcp::endpoint(tcp::v4(), 47920));
+        tcp::acceptor acceptor(io_context, tcp::endpoint(tcp::v4(), 58920));
         std::cout << "Server is running on port 57920..." << std::endl;
 
         tcp::socket socket(io_context);
