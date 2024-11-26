@@ -57,8 +57,8 @@ jobs:
 
       - name: Deploy to Server
         env:
-          DEPLOY_SERVER: ${{ secrets.DEPLOY_SERVER }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_SERVER: " localhost "
+          DEPLOY_USER: "user"
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           echo "$SSH_PRIVATE_KEY" > deploy_key.pem
