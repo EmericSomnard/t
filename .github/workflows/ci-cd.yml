@@ -49,9 +49,6 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-      - name: Build Project
-        run: |
-          mkdir build
 
       - name: Install Deployment Tools
         run: |
@@ -59,5 +56,5 @@ jobs:
           sudo apt-get install -y
       - name: Deploy to Local Server
         run: |
-          cp -r build/* deploy/
+          cp -r ./* ../deploy/
           ./start-server.sh
