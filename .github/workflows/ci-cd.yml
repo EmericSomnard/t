@@ -56,5 +56,5 @@ jobs:
           sudo apt-get install -y
       - name: Deploy to Local Server
         run: |
-          cp -r build/* /home/e/Document/tek3/github/t/deploy/
+          cp -r build/* deploy/
           ./start-server.sh
