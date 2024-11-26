@@ -53,7 +53,7 @@ jobs:
       - name: Install Deployment Tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y some-other-deployment-tool
+          sudo apt-get install -y
       - name: Deploy to Local Server
         run: |
           cp -r build/* /path/to/deploy/folder/
