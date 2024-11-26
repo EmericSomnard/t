@@ -56,4 +56,4 @@ jobs:
           sudo apt-get install -y
       - name: Deploy to Local Server
         run: |
-          ./start-server.sh
+          ./rtype_server.sh
