@@ -10,7 +10,7 @@ void test_server() {
         // Connect to the server
         boost::asio::io_context io_context;
         tcp::socket socket(io_context);
-        socket.connect(tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 12345));
+        socket.connect(tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 123456));
 
         // Read response
         boost::asio::streambuf buffer;

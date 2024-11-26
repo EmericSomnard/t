@@ -10,7 +10,7 @@ void start_server() {
         boost::asio::io_context io_context;
 
         // Create an endpoint listening on port 12345
-        tcp::acceptor acceptor(io_context, tcp::endpoint(tcp::v4(), 12345));
+        tcp::acceptor acceptor(io_context, tcp::endpoint(tcp::v4(), 123456));
         std::cout << "Server is running on port 12345..." << std::endl;
 
         while (true) {
