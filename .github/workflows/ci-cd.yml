@@ -53,17 +53,8 @@ jobs:
       - name: Install Deployment Tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y openssh-client rsync
-
-      - name: Deploy to Server
-        env:
-          DEPLOY_SERVER: " localhost "
-          DEPLOY_USER: "user"
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          sudo apt-get install -y some-other-deployment-tool
+      - name: Deploy to Local Server
         run: |
-          echo "$SSH_PRIVATE_KEY" > deploy_key.pem
-          chmod 600 deploy_key.pem
-
-          rsync -avz -e "ssh -i deploy_key.pem" build/ $DEPLOY_USER@$DEPLOY_SERVER:~/rtype-server/
-
-          ssh -i deploy_key.pem $DEPLOY_USER@$DEPLOY_SERVER "cd ~/rtype-server && ./start-server.sh"
+          cp -r build/* /path/to/deploy/folder/
+          ./start-server.sh
