@@ -3,6 +3,7 @@
 #include <cassert>
 #include <thread>
 #include <chrono>
+#include <csignal>
 
 using boost::asio::ip::tcp;
 
@@ -63,7 +64,6 @@ void test_server() {
     }
 }
 
-#include <csignal>
 
 int main() {
     std::cout << "Démarrage du test du serveur..." << std::endl;
@@ -78,9 +78,10 @@ int main() {
     test_server();
 
     // Envoyer SIGINT pour arrêter le serveur
+    std::cout << "Envoi du signal pour arrêter le serveur..." << std::endl;
     std::raise(SIGINT);
 
-    // Attendre que le serveur se termine
+    // Attendre que le thread du serveur se termine
     server_thread.join();
 
     std::cout << "Test terminé, serveur arrêté." << std::endl;
