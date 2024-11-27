@@ -51,12 +51,19 @@ jobs:
 
       - name: Deploy to Local Server
         run: |
-          nohup ./rtype_server &
+          nohup ./rtype_server &  # Lancer le serveur en arrière-plan
+          sleep 5  # Attendre un peu plus longtemps pour s'assurer que le serveur soit prêt
 
       - name: Test Deployed Server
         run: |
-          sleep 2  # Attendre que le serveur se lance
-          curl --fail http://localhost:18720 || exit 1  # Vérifier la disponibilité du serveur
+          # Attente jusqu'à ce que le serveur soit prêt à accepter des connexions
+          for i in {1..10}; do
+            curl --fail http://localhost:58920 && break  # Si ça réussit, on sort de la boucle
+            echo "Tentative de connexion échouée, réessaye..."
+            sleep 1  # Attendre avant de réessayer
+          done
+          curl --fail http://localhost:58920 || exit 1  # Si on échoue après plusieurs tentatives, arrêter
+
 
       - name: Stop Server
         run: |
