@@ -63,6 +63,8 @@ void test_server() {
     }
 }
 
+#include <csignal>
+
 int main() {
     std::cout << "Démarrage du test du serveur..." << std::endl;
 
@@ -75,8 +77,14 @@ int main() {
     // Lancer les tests
     test_server();
 
-    // Terminer le thread du serveur proprement
-    server_thread.detach(); // Vous pouvez aussi implémenter un signal pour arrêter le serveur
+    // Envoyer SIGINT pour arrêter le serveur
+    std::raise(SIGINT);
+
+    // Attendre que le serveur se termine
+    server_thread.join();
+
+    std::cout << "Test terminé, serveur arrêté." << std::endl;
 
     return 0;
 }
+
