@@ -43,6 +43,7 @@ jobs:
 
       - name: Run Tests
         run: |
+          cd build
           # Démarrer le serveur en arrière-plan
           ./rtype_server &
 
