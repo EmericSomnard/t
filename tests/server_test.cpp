@@ -19,7 +19,7 @@ void test_server() {
         // Essayer de se connecter au serveur pendant un court délai
         for (int i = 0; i < 5; ++i) {
             try {
-                socket.connect(tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 51920));
+                socket.connect(tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 53920));
                 std::cout << "Connexion réussie avant l'arrêt." << std::endl;
                 break;
             } catch (const boost::system::system_error& e) {
@@ -33,7 +33,7 @@ void test_server() {
 
         // Après l'arrêt, vérifier si la connexion échoue
         try {
-            socket.connect(tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 51920));
+            socket.connect(tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 53920));
             std::cout << "Erreur: La connexion devrait avoir échoué après l'arrêt du serveur." << std::endl;
         } catch (const boost::system::system_error& e) {
             std::cout << "Test réussi: Le serveur est bien arrêté, connexion échouée." << std::endl;

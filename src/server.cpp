@@ -16,17 +16,27 @@ void handle_signal(int signal) {
 void start_server() {
     try {
         boost::asio::io_context io_context;
-        tcp::acceptor acceptor(io_context, tcp::endpoint(tcp::v4(), 51920));  // Assure-toi que le port est le bon
-        std::cout << "Server is running on port 51920..." << std::endl;
+        tcp::acceptor acceptor(io_context, tcp::endpoint(tcp::v4(), 53920));
+        std::cout << "Server is running on port 53920..." << std::endl;
+
+        tcp::socket socket(io_context);
+        acceptor.accept(socket);
+        std::cout << "Client connected!" << std::endl;
 
         while (!stop_server) {
-            tcp::socket socket(io_context);
-            acceptor.accept(socket);
-            std::cout << "Client connected!" << std::endl;
-            std::string message = "Hello from the server!\n";
-            boost::asio::write(socket, boost::asio::buffer(message));
-            socket.close();  // Fermer la connexion avec le client
-            std::cout << "Connection closed with client." << std::endl;
+            boost::system::error_code ec;
+            char data[1];
+            size_t length = socket.read_some(boost::asio::buffer(data), ec);
+
+            if (ec == boost::asio::error::eof) {
+                std::cout << "Client disconnected. Stopping server." << std::endl;
+                stop_server = true;
+                break;
+            } else if (ec) {
+                throw boost::system::system_error(ec);
+            }
+
+            // Traiter les données reçues si nécessaire
         }
 
         std::cout << "Server shutting down..." << std::endl;
@@ -37,12 +47,12 @@ void start_server() {
 }
 
 int main() {
-    std::signal(SIGINT, handle_signal);  // Enregistre le signal SIGINT pour arrêter le serveur proprement
+    std::signal(SIGINT, handle_signal);
 
     std::cout << "Starting server..." << std::endl;
-    std::thread server_thread(start_server);  // Démarre le serveur dans un thread
+    std::thread server_thread(start_server);
 
-    server_thread.join();  // Attends que le serveur termine son exécution
+    server_thread.join();
 
     std::cout << "Server has stopped." << std::endl;
 
