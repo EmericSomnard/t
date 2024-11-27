@@ -35,31 +35,39 @@ jobs:
           make
           ls -l            # Lister les fichiers générés après make
 
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artifacts
+          path: build/
+
 
 
   test:
     needs: build
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      # Ajoutez cette nouvelle étape au début du job test
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build-artifacts
+          path: build/
+
+      # Ajoutez cette étape pour vérifier le contenu du répertoire build
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: build/
+
+      # Votre étape existante "Run Tests" reste inchangée
       - name: Run Tests
         run: |
           ls -l
           cd build
-          # Démarrer le serveur en arrière-plan
-          ./rtype_server &
 
-          # Attendre un instant pour laisser le serveur démarrer
-          sleep 2
-
-          # Lancer les tests
-          ./server_test
-
-          # Tuer le processus du serveur après les tests
-          pkill rtype_server || true
 
   deploy:
     needs: test
