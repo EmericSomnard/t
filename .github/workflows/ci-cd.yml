@@ -23,26 +23,40 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake build-essential libboost-all-dev libgtest-dev
+          sudo apt-get install -y cmake build-essential libboost-all-dev
 
       # Build the project
       - name: Build the Project
         run: |
-          mkdir -p deploy
           mkdir -p build
           cd build
           cmake ..
           make
 
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
       - name: Run Tests
         run: |
-          cd build
-          ctest -V
+          # Démarrer le serveur en arrière-plan
+          ./build/rtype_server &
 
+          # Attendre un instant pour laisser le serveur démarrer
+          sleep 2
 
+          # Lancer les tests
+          ./build/server_test
+
+          # Tuer le processus du serveur après les tests
+          pkill rtype_server || true
 
   deploy:
-    needs: build
+    needs: test
     runs-on: ubuntu-latest
     name: Deploy C++ Server
 
@@ -54,6 +68,14 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y
+
       - name: Deploy to Local Server
         run: |
-          ./server_test
+          # Copier l'exécutable dans le dossier de déploiement
+          mkdir -p deploy
+          cp build/rtype_server deploy/
+
+          # Lancer le serveur
+          cd deploy
+          chmod +x rtype_server
+          ./rtype_server &
