@@ -29,11 +29,11 @@ jobs:
       - name: Build the Project
         run: |
           mkdir -p build
-          ls -l
           cd build
-          ls -l
-          cmake ..
-          make
+          cmake .. || { echo "CMake configuration failed"; exit 1; }
+          make || { echo "Build failed"; exit 1; }
+          ls -l # Vérifier le contenu du répertoire build après make
+
 
   test:
     needs: build
