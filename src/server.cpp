@@ -12,6 +12,7 @@ void handle_signal(int signal) {
     }
 }
 
+
 void start_server() {
     try {
         boost::asio::io_context io_context;
@@ -22,6 +23,7 @@ void start_server() {
         while (!stop_server) {
             tcp::socket socket(io_context);
             acceptor.accept(socket);
+
 
             std::cout << "Client connected!" << std::endl;
             std::string message = "Hello from the server!\n";
