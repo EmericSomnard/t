@@ -56,7 +56,7 @@ jobs:
       - name: Test Deployed Server
         run: |
           sleep 2  # Attendre que le serveur se lance
-          curl --fail http://localhost:58920 || exit 1  # Vérifier la disponibilité du serveur
+          curl --fail http://localhost:18720 || exit 1  # Vérifier la disponibilité du serveur
 
       - name: Stop Server
         run: |
