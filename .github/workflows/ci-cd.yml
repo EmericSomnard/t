@@ -15,123 +15,42 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout code
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Install dependencies
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake build-essential libboost-all-dev
+          sudo apt-get install -y cmake build-essential libboost-all-dev libgtest-dev
 
-      # Build the project
       - name: Build the Project
         run: |
+          mkdir -p deploy
           mkdir -p build
           cd build
           cmake ..
           make
 
-      # Upload artifacts (exécutables et autres fichiers nécessaires)
-      - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-artifacts
-          path: build/rtype_server
-
-
-
-
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      # Télécharger les artefacts nécessaires
-      - name: Download Build Artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: build-artifacts
-
       - name: Run Tests
         run: |
-          # Vérifier la présence des fichiers téléchargés
-          echo "Contenu du répertoire actuel :"
-          ls -l
-
-          if [ ! -f "./rtype_server" ]; then
-            echo "Erreur : rtype_server n'a pas été téléchargé."
-            exit 1
-          fi
-
-          if [ ! -f "./server_test" ]; then
-            echo "Erreur : server_test n'a pas été téléchargé."
-            exit 1
-          fi
-          
-          # Donner les permissions d'exécution aux fichiers nécessaires
-          chmod +x ./rtype_server
-          chmod +x ./server_test
-          
-          # Démarrer le serveur en arrière-plan
-          ./rtype_server &
-
-          # Attendre un instant pour laisser le serveur démarrer
-          sleep 2
-
-          # Lancer les tests
-          ./server_test
-
-          # Tuer le processus du serveur après les tests
-          pkill rtype_server || true
-
-
-
+          cd build
+          ctest -V
 
 
 
   deploy:
-    needs: test
+    needs: build
     runs-on: ubuntu-latest
     name: Deploy C++ Server
 
     steps:
-      # Checkout Code
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Download the build artifacts
-      - name: Download Build Artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: build-artifacts
-
-      # Deploy to Local Server
+      - name: Install Deployment Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y
       - name: Deploy to Local Server
         run: |
-          # Copier l'exécutable dans le dossier de déploiement
-          mkdir -p deploy
-          cp rtype_server deploy/
-          cp server_test deploy/
-
-          # Vérifier les fichiers dans le répertoire de déploiement
-          ls -l deploy/
-
-          # Lancer le serveur
-          cd deploy
-          chmod +x rtype_server  # S'assurer que l'exécutable est bien exécutable
-          ./rtype_server &       # Démarrer le serveur en arrière-plan
-
-          # Attendre un instant pour laisser le serveur démarrer
-          sleep 2
-
-          # Lancer les tests
-          ./server_test
-
-          # Tuer le processus du serveur après les tests
-          pkill rtype_server || true
-
+          ./rtype_server
