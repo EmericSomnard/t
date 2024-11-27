@@ -61,7 +61,7 @@ jobs:
           # Tuer le processus du serveur après les tests
           pkill rtype_server || true
 
-    deploy:
+  deploy:
     needs: test
     runs-on: ubuntu-latest
     name: Deploy C++ Server
