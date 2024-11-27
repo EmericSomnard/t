@@ -29,7 +29,9 @@ jobs:
       - name: Build the Project
         run: |
           mkdir -p build
+          ls -l
           cd build
+          ls -l
           cmake ..
           make
 
@@ -43,6 +45,7 @@ jobs:
 
       - name: Run Tests
         run: |
+          ls -l
           cd build
           # Démarrer le serveur en arrière-plan
           ./rtype_server &
