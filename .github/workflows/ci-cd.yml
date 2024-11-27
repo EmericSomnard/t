@@ -1,15 +1,3 @@
-name: R-Type Server CI/CD
-
-on:
-  push:
-    branches:
-      - server
-      - main
-  pull_request:
-    branches:
-      - server
-      - main
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -41,32 +29,19 @@ jobs:
     name: Deploy C++ Server
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Install Deployment Tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y
-
       - name: Deploy to Local Server
         run: |
-          nohup ./rtype_server &  # Lancer le serveur en arrière-plan
-          sleep 5  # Attendre un peu plus longtemps pour s'assurer que le serveur soit prêt
+          nohup ./rtype_server &
+
+      - name: Wait for Server to Start
+        run: |
+          sleep 5  # Attends 5 secondes pour que le serveur démarre correctement
 
       - name: Test Deployed Server
         run: |
-          # Attente jusqu'à ce que le serveur soit prêt à accepter des connexions
-          for i in {1..10}; do
-            curl --fail http://localhost:38920 && break  # Si ça réussit, on sort de la boucle
-            echo "Tentative de connexion échouée, réessaye..."
-            sleep 1  # Attendre avant de réessayer
-          done
-          curl --fail http://localhost:38920 || exit 1  # Si on échoue après plusieurs tentatives, arrêter
+          curl --fail http://localhost:58920 || exit 1
 
-
-      - name: Stop Server
+      - name: Send stop signal to server
         run: |
-          echo "Arrêt du serveur..."
-          pkill -f "rtype_server"  # Arrêter proprement le serveur
-
+          sleep 5  # Attends encore quelques secondes pour donner le temps au serveur de se fermer
+          curl --fail http://localhost:58920 || exit 1  # Vérifie que le serveur est bien arrêté

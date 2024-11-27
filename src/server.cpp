@@ -16,12 +16,10 @@ void handle_signal(int signal) {
 void start_server() {
     try {
         boost::asio::io_context io_context;
-        tcp::acceptor acceptor(io_context, tcp::endpoint(tcp::v4(), 38920));
+        tcp::acceptor acceptor(io_context, tcp::endpoint(tcp::v4(), 58920));  // Assure-toi que le port est le bon
+        std::cout << "Server is running on port 58920..." << std::endl;
 
-        std::cout << "Server is running on port 38920..." << std::endl;
-
-        int iteration_count = 0; // Compteur d'itérations
-        while (!stop_server && iteration_count < 10) { // Limiter le nombre de tentatives
+        while (!stop_server) {
             tcp::socket socket(io_context);
             acceptor.accept(socket);
             std::cout << "Client connected!" << std::endl;
@@ -29,7 +27,6 @@ void start_server() {
             boost::asio::write(socket, boost::asio::buffer(message));
             socket.close();  // Fermer la connexion avec le client
             std::cout << "Connection closed with client." << std::endl;
-            iteration_count++;
         }
 
         std::cout << "Server shutting down..." << std::endl;
@@ -39,20 +36,13 @@ void start_server() {
     }
 }
 
-
 int main() {
-    std::signal(SIGINT, handle_signal);  // Enregistrer le gestionnaire de signal
+    std::signal(SIGINT, handle_signal);  // Enregistre le signal SIGINT pour arrêter le serveur proprement
 
     std::cout << "Starting server..." << std::endl;
+    std::thread server_thread(start_server);  // Démarre le serveur dans un thread
 
-    std::thread server_thread(start_server);  // Lancer le serveur dans un thread séparé
-
-    std::this_thread::sleep_for(std::chrono::seconds(10));  // Attendre un peu pour laisser le serveur démarrer
-
-    std::cout << "Sending stop signal to server..." << std::endl;
-    std::raise(SIGINT);  // Envoyer le signal d'arrêt (SIGINT)
-
-    server_thread.join();  // Attendre que le serveur se ferme correctement
+    server_thread.join();  // Attends que le serveur termine son exécution
 
     std::cout << "Server has stopped." << std::endl;
 

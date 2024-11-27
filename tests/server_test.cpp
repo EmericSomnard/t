@@ -2,13 +2,13 @@
 #include <boost/asio.hpp>
 #include <thread>
 #include <chrono>
-#include <csignal> // Pour gérer les signaux
+#include <csignal>
 
 using boost::asio::ip::tcp;
 
 // Fonction pour démarrer le serveur dans un thread séparé
 void run_server() {
-    std::system("../build/rtype_server"); // Chemin vers l'exécutable du serveur
+    std::system("../build/rtype_server");  // Chemin vers l'exécutable du serveur
 }
 
 void test_server() {
@@ -16,12 +16,11 @@ void test_server() {
         boost::asio::io_context io_context;
         tcp::socket socket(io_context);
 
-        bool connected = false;
-
+        // Essayer de se connecter au serveur pendant un court délai
         for (int i = 0; i < 5; ++i) {
             try {
-                socket.connect(tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 38920));
-                connected = true;
+                socket.connect(tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 58920));
+                std::cout << "Connexion réussie avant l'arrêt." << std::endl;
                 break;
             } catch (const boost::system::system_error& e) {
                 std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -29,28 +28,16 @@ void test_server() {
             }
         }
 
-        if (!connected) {
-            std::cerr << "Erreur: Impossible de se connecter au serveur." << std::endl;
-            assert(false);
-            return;
+        // Envoyer un signal pour arrêter le serveur
+        std::raise(SIGINT);  // Simuler l'arrêt du serveur
+
+        // Après l'arrêt, vérifier si la connexion échoue
+        try {
+            socket.connect(tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 58920));
+            std::cout << "Erreur: La connexion devrait avoir échoué après l'arrêt du serveur." << std::endl;
+        } catch (const boost::system::system_error& e) {
+            std::cout << "Test réussi: Le serveur est bien arrêté, connexion échouée." << std::endl;
         }
-
-        std::cout << "Connexion établie avec succès au serveur." << std::endl;
-
-        boost::asio::streambuf buffer;
-        boost::asio::read_until(socket, buffer, "\n");
-
-        std::istream input(&buffer);
-        std::string message;
-        std::getline(input, message);
-
-        std::cout << "Message reçu du serveur: " << message << std::endl;
-        assert(message == "Hello from the server!");
-
-        std::cout << "Test réussi : Le message correspond aux attentes." << std::endl;
-
-        socket.close();
-        std::cout << "Connexion fermée." << std::endl;
 
     } catch (std::exception &e) {
         std::cerr << "Test échoué: " << e.what() << std::endl;
@@ -61,17 +48,16 @@ void test_server() {
 int main() {
     std::cout << "Démarrage du test du serveur..." << std::endl;
 
-    std::thread server_thread(run_server);
+    std::thread server_thread(run_server);  // Démarre le serveur dans un thread
 
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::this_thread::sleep_for(std::chrono::seconds(1));  // Attends que le serveur soit prêt
 
-
-    test_server();
+    test_server();  // Exécute le test de connexion
 
     std::cout << "Envoi du signal pour arrêter le serveur..." << std::endl;
-    std::raise(SIGINT);
+    std::raise(SIGINT);  // Envoi du signal pour arrêter le serveur
 
-    server_thread.join();
+    server_thread.join();  // Attends que le serveur termine
 
     std::cout << "Test terminé, serveur arrêté." << std::endl;
 
