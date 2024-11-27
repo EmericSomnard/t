@@ -62,6 +62,16 @@ jobs:
           # Vérifier si les fichiers sont bien présents après téléchargement
           ls -l
           
+          # S'assurer que les fichiers sont bien téléchargés
+          if [ ! -f "./rtype_server" ]; then
+            echo "Erreur : rtype_server n'a pas été téléchargé."
+            exit 1
+          fi
+          if [ ! -f "./server_test" ]; then
+            echo "Erreur : server_test n'a pas été téléchargé."
+            exit 1
+          fi
+          
           # Donner les permissions d'exécution aux fichiers nécessaires
           chmod +x ./rtype_server
           chmod +x ./server_test
@@ -77,6 +87,7 @@ jobs:
 
           # Tuer le processus du serveur après les tests
           pkill rtype_server || true
+
 
 
 
