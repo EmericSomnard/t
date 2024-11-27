@@ -30,9 +30,11 @@ jobs:
         run: |
           mkdir -p build
           cd build
-          cmake .. || { echo "CMake configuration failed"; exit 1; }
-          make || { echo "Build failed"; exit 1; }
-          ls -l # Vérifier le contenu du répertoire build après make
+          cmake ..
+          ls -l            # Lister les fichiers générés après cmake
+          make
+          ls -l            # Lister les fichiers générés après make
+
 
 
   test:
