@@ -6,9 +6,8 @@
 
 using boost::asio::ip::tcp;
 
-// Fonction pour démarrer le serveur dans un thread séparé
 void run_server() {
-    std::system("../build/rtype_server");  // Chemin vers l'exécutable du serveur
+    std::system("../build/rtype_server");
 }
 
 void test_server() {
@@ -16,7 +15,6 @@ void test_server() {
         boost::asio::io_context io_context;
         tcp::socket socket(io_context);
 
-        // Essayer de se connecter au serveur pendant un court délai
         for (int i = 0; i < 5; ++i) {
             try {
                 socket.connect(tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 53920));
@@ -28,10 +26,7 @@ void test_server() {
             }
         }
 
-        // Envoyer un signal pour arrêter le serveur
-        std::raise(SIGINT);  // Simuler l'arrêt du serveur
-
-        // Après l'arrêt, vérifier si la connexion échoue
+        std::raise(SIGINT);
         try {
             socket.connect(tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 53920));
             std::cout << "Erreur: La connexion devrait avoir échoué après l'arrêt du serveur." << std::endl;
@@ -48,17 +43,12 @@ void test_server() {
 int main() {
     std::cout << "Démarrage du test du serveur..." << std::endl;
 
-    std::thread server_thread(run_server);  // Démarre le serveur dans un thread
-
-    std::this_thread::sleep_for(std::chrono::seconds(1));  // Attends que le serveur soit prêt
-
-    test_server();  // Exécute le test de connexion
-
+    std::thread server_thread(run_server);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    test_server();
     std::cout << "Envoi du signal pour arrêter le serveur..." << std::endl;
-    std::raise(SIGINT);  // Envoi du signal pour arrêter le serveur
-
-    server_thread.join();  // Attends que le serveur termine
-
+    std::raise(SIGINT);
+    server_thread.join();
     std::cout << "Test terminé, serveur arrêté." << std::endl;
 
     return 0;

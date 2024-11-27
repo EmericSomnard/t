@@ -36,8 +36,7 @@ void start_server() {
                 throw boost::system::system_error(ec);
             }
 
-            // Traiter les données reçues si nécessaire
-        }
+            }
 
         std::cout << "Server shutting down..." << std::endl;
 

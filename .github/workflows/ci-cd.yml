@@ -47,7 +47,7 @@ jobs:
 
       - name: Wait for Server to Start
         run: |
-          sleep 5  # Attends 5 secondes pour que le serveur démarre correctement
+          sleep 5
 
       - name: Test Deployed Server
         run: |
@@ -56,4 +56,4 @@ jobs:
       - name: Send stop signal to server
         run: |
           sleep 5  # Attends encore quelques secondes pour donner le temps au serveur de se fermer
-          curl --fail http://localhost:53920 || exit 1  # Vérifie que le serveur est bien arrêté
+          curl --fail http://localhost:53920 || exit 1
