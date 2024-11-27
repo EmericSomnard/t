@@ -48,20 +48,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout code
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Download the build artifacts
-      - name: Download Build Artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: build-artifacts
-
-      # Run Tests
       - name: Run Tests
         run: |
+          # Lister les fichiers dans le répertoire
           ls -l
+          
+          # Aller dans le répertoire build
+          cd build
+          
+          # Donner les permissions d'exécution aux fichiers nécessaires
+          chmod +x ./rtype_server
+          chmod +x ./server_test
+          
           # Démarrer le serveur en arrière-plan
           ./rtype_server &
 
@@ -72,7 +73,8 @@ jobs:
           ./server_test
 
           # Tuer le processus du serveur après les tests
-          pkill rtype_server || true
+            pkill rtype_server || true
+
 
 
   deploy:
