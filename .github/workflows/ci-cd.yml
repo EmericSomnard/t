@@ -59,14 +59,15 @@ jobs:
 
       - name: Run Tests
         run: |
-          # Vérifier si les fichiers sont bien présents après téléchargement
+          # Vérifier la présence des fichiers téléchargés
+          echo "Contenu du répertoire actuel :"
           ls -l
-          
-          # S'assurer que les fichiers sont bien téléchargés
+
           if [ ! -f "./rtype_server" ]; then
             echo "Erreur : rtype_server n'a pas été téléchargé."
             exit 1
           fi
+
           if [ ! -f "./server_test" ]; then
             echo "Erreur : server_test n'a pas été téléchargé."
             exit 1
@@ -87,6 +88,7 @@ jobs:
 
           # Tuer le processus du serveur après les tests
           pkill rtype_server || true
+
 
 
 
