@@ -41,11 +41,25 @@ jobs:
     name: Deploy C++ Server
 
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install Deployment Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y
+
       - name: Deploy to Local Server
         run: |
           nohup ./rtype_server &
 
       - name: Test Deployed Server
         run: |
-          sleep 2
-          curl --fail http://localhost:18720 || exit 1
+          sleep 2  # Attendre que le serveur se lance
+          curl --fail http://localhost:58920 || exit 1  # Vérifier la disponibilité du serveur
+
+      - name: Stop Server
+        run: |
+          echo "Arrêt du serveur..."
+          pkill -f "rtype_server"  # Arrêter proprement le serveur
+
