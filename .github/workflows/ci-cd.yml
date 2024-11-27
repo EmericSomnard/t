@@ -80,8 +80,21 @@ jobs:
           # Copier l'exécutable dans le dossier de déploiement
           mkdir -p deploy
           cp build/rtype_server deploy/
+          cp build/server_test deploy/
+
+          # Vérifier les fichiers dans le répertoire de déploiement
+          ls -l deploy/
 
           # Lancer le serveur
           cd deploy
-          chmod +x rtype_server
-          ./rtype_server &
+          chmod +x rtype_server  # S'assurer que l'exécutable est bien exécutable
+          ./rtype_server &       # Démarrer le serveur en arrière-plan
+          
+          # Attendre un instant pour laisser le serveur démarrer
+          sleep 2
+
+          # Lancer les tests
+          ./server_test
+
+          # Tuer le processus du serveur après les tests
+          pkill rtype_server || true
