@@ -16,8 +16,8 @@ void handle_signal(int signal) {
 void start_server() {
     try {
         boost::asio::io_context io_context;
-        tcp::acceptor acceptor(io_context, tcp::endpoint(tcp::v4(), 58920));  // Assure-toi que le port est le bon
-        std::cout << "Server is running on port 58920..." << std::endl;
+        tcp::acceptor acceptor(io_context, tcp::endpoint(tcp::v4(), 51920));  // Assure-toi que le port est le bon
+        std::cout << "Server is running on port 51920..." << std::endl;
 
         while (!stop_server) {
             tcp::socket socket(io_context);

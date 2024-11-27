@@ -51,9 +51,9 @@ jobs:
 
       - name: Test Deployed Server
         run: |
-          curl --fail http://localhost:58920 || exit 1
+          curl --fail http://localhost:51920 || exit 1
 
       - name: Send stop signal to server
         run: |
           sleep 5  # Attends encore quelques secondes pour donner le temps au serveur de se fermer
-          curl --fail http://localhost:58920 || exit 1  # Vérifie que le serveur est bien arrêté
+          curl --fail http://localhost:51920 || exit 1  # Vérifie que le serveur est bien arrêté
