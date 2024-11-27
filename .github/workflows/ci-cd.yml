@@ -31,9 +31,15 @@ jobs:
           mkdir -p build
           cd build
           cmake ..
-          ls -l            # Lister les fichiers générés après cmake
           make
-          ls -l            # Lister les fichiers générés après make
+
+      # Upload artifacts (exécutables et autres fichiers nécessaires)
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: build/rtype_server
+
 
 
 
@@ -42,13 +48,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout code
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      # Download the build artifacts
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+
+      # Run Tests
       - name: Run Tests
         run: |
           ls -l
-          cd build
           # Démarrer le serveur en arrière-plan
           ./rtype_server &
 
@@ -61,26 +74,30 @@ jobs:
           # Tuer le processus du serveur après les tests
           pkill rtype_server || true
 
+
   deploy:
     needs: test
     runs-on: ubuntu-latest
     name: Deploy C++ Server
 
     steps:
+      # Checkout Code
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Install Deployment Tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y
+      # Download the build artifacts
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
 
+      # Deploy to Local Server
       - name: Deploy to Local Server
         run: |
           # Copier l'exécutable dans le dossier de déploiement
           mkdir -p deploy
-          cp build/rtype_server deploy/
-          cp build/server_test deploy/
+          cp rtype_server deploy/
+          cp server_test deploy/
 
           # Vérifier les fichiers dans le répertoire de déploiement
           ls -l deploy/
@@ -89,7 +106,7 @@ jobs:
           cd deploy
           chmod +x rtype_server  # S'assurer que l'exécutable est bien exécutable
           ./rtype_server &       # Démarrer le serveur en arrière-plan
-          
+
           # Attendre un instant pour laisser le serveur démarrer
           sleep 2
 
@@ -98,3 +115,4 @@ jobs:
 
           # Tuer le processus du serveur après les tests
           pkill rtype_server || true
+
