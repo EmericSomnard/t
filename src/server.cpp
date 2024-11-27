@@ -16,31 +16,29 @@ void handle_signal(int signal) {
 void start_server() {
     try {
         boost::asio::io_context io_context;
-        tcp::acceptor acceptor(io_context, tcp::endpoint(tcp::v4(), 58920));
+        tcp::acceptor acceptor(io_context, tcp::endpoint(tcp::v4(), 38920));
 
-        std::cout << "Server is running on port 58920..." << std::endl;
+        std::cout << "Server is running on port 38920..." << std::endl;
 
-        // Boucle principale d'écoute
-        while (!stop_server) {
+        int iteration_count = 0; // Compteur d'itérations
+        while (!stop_server && iteration_count < 10) { // Limiter le nombre de tentatives
             tcp::socket socket(io_context);
             acceptor.accept(socket);
-
             std::cout << "Client connected!" << std::endl;
             std::string message = "Hello from the server!\n";
             boost::asio::write(socket, boost::asio::buffer(message));
             socket.close();  // Fermer la connexion avec le client
-
             std::cout << "Connection closed with client." << std::endl;
+            iteration_count++;
         }
 
         std::cout << "Server shutting down..." << std::endl;
-        // Libération des ressources (fermeture propre)
-        io_context.stop();
 
     } catch (const std::exception &e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
 }
+
 
 int main() {
     std::signal(SIGINT, handle_signal);  // Enregistrer le gestionnaire de signal

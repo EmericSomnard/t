@@ -58,11 +58,11 @@ jobs:
         run: |
           # Attente jusqu'à ce que le serveur soit prêt à accepter des connexions
           for i in {1..10}; do
-            curl --fail http://localhost:58920 && break  # Si ça réussit, on sort de la boucle
+            curl --fail http://localhost:38920 && break  # Si ça réussit, on sort de la boucle
             echo "Tentative de connexion échouée, réessaye..."
             sleep 1  # Attendre avant de réessayer
           done
-          curl --fail http://localhost:58920 || exit 1  # Si on échoue après plusieurs tentatives, arrêter
+          curl --fail http://localhost:38920 || exit 1  # Si on échoue après plusieurs tentatives, arrêter
 
 
       - name: Stop Server
