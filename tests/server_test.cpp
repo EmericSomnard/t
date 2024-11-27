@@ -8,7 +8,7 @@ using boost::asio::ip::tcp;
 
 // Fonction pour démarrer le serveur dans un thread séparé
 void run_server() {
-    std::system("../src/server.cpp"); // Assurez-vous que le serveur est dans le PATH ou donnez un chemin absolu
+    std::system("../build/rtype_server"); // Assurez-vous que le serveur est dans le PATH ou donnez un chemin absolu
 }
 
 void test_server() {
