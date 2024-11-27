@@ -13,7 +13,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -36,21 +35,19 @@ jobs:
           cd build
           ctest -V
 
-
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
     name: Deploy C++ Server
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Install Deployment Tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y
+      # Lancer le serveur en arrière-plan
       - name: Deploy to Local Server
         run: |
-          ./rtype_server
+          nohup ./rtype_server &  # Lance le serveur en arrière-plan
+
+      # Tester si le serveur est en ligne
+      - name: Test Deployed Server
+        run: |
+          sleep 2  # Attendre quelques secondes pour que le serveur se lance
+          curl --fail http://localhost:58920 || exit 1  # Vérifie si le serveur répond
