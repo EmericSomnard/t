@@ -1,15 +1,14 @@
 #include <iostream>
 #include <boost/asio.hpp>
-#include <cassert>
 #include <thread>
 #include <chrono>
-#include <csignal>
+#include <csignal> // Pour gérer les signaux
 
 using boost::asio::ip::tcp;
 
 // Fonction pour démarrer le serveur dans un thread séparé
 void run_server() {
-    std::system("../build/rtype_server"); // Assurez-vous que le serveur est dans le PATH ou donnez un chemin absolu
+    std::system("../build/rtype_server"); // Chemin vers l'exécutable du serveur
 }
 
 void test_server() {
@@ -64,7 +63,6 @@ void test_server() {
     }
 }
 
-
 int main() {
     std::cout << "Démarrage du test du serveur..." << std::endl;
 
@@ -88,4 +86,3 @@ int main() {
 
     return 0;
 }
-
