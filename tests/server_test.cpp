@@ -21,7 +21,7 @@ void test_server() {
         // Essayer de se connecter au serveur (5 tentatives)
         for (int i = 0; i < 5; ++i) {
             try {
-                socket.connect(tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 58920));
+                socket.connect(tcp::endpoint(boost::asio::ip::address::from_string("127.0.0.1"), 18720));
                 connected = true;
                 break;
             } catch (const boost::system::system_error& e) {
