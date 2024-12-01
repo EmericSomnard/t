@@ -38,22 +38,16 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    name: Deploy C++ Server
-
     steps:
-      - name: Deploy to Local Server
-        run: |
-          nohup ./rtype_server &
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-      - name: Wait for Server to Start
+      - name: Build Docker Image
         run: |
-          sleep 5
+          docker build -t rtype-server:${{ github.sha }} .
 
-      - name: Test Deployed Server
+      - name: Run Docker Container Locally
         run: |
-          curl --fail http://localhost:53920 || exit 1
-
-      - name: Send stop signal to server
-        run: |
-          sleep 5
-          curl --fail http://localhost:53920 || exit 1
+          docker stop rtype-server || true
+          docker rm rtype-server || true
+          docker run -d --name rtype-server -p 2080:2080 rtype-server:${{ github.sha }}
