@@ -36,18 +36,20 @@ jobs:
           ctest -V
 
   deploy:
-    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Build Docker Image
+      - name: Set Timezone to Avoid Interactive Prompt
         run: |
-          docker build -t rtype-server:${{ github.sha }} .
+          export DEBIAN_FRONTEND=noninteractive
+          ln -fs /usr/share/zoneinfo/Europe/Paris /etc/localtime
+          apt-get update
+          apt-get install -y tzdata
+          dpkg-reconfigure --frontend noninteractive tzdata
 
-      - name: Run Docker Container Locally
+      - name: Install Dependencies
         run: |
-          docker stop rtype-server || true
-          docker rm rtype-server || true
-          docker run -d --name rtype-server -p 2080:2080 rtype-server:${{ github.sha }}
+          sudo apt-get update
+          sudo apt-get install -y cmake build-essential libboost-all-dev libgtest-dev
