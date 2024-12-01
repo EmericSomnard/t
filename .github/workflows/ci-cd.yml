@@ -44,10 +44,10 @@ jobs:
       - name: Set Timezone to Avoid Interactive Prompt
         run: |
           export DEBIAN_FRONTEND=noninteractive
-          ln -fs /usr/share/zoneinfo/Europe/Paris /etc/localtime
-          apt-get update
-          apt-get install -y tzdata
-          dpkg-reconfigure --frontend noninteractive tzdata
+          sudo ln -fs /usr/share/zoneinfo/Europe/Paris /etc/localtime
+          sudo apt-get update
+          sudo apt-get install -y tzdata
+          sudo dpkg-reconfigure --frontend noninteractive tzdata
 
       - name: Install Dependencies
         run: |
