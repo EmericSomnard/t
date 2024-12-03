@@ -13,7 +13,7 @@ Ce pipeline garantit que le code est compilé, testé et déployé correctement 
 
 Le pipeline CI/CD est déclenché automatiquement dans les cas suivants :
 - Un **push** est effectué sur les branches `dev`, `server`, `engine`, `game`, `graphic` ou `main`.
-- Une **Pull Request** est ouverte vers les branches `dev` ou `main`.
+- Une **Pull Request** est ouverte vers les branches `dev`, `engine` ou `main`.
 
 ### 2. Étapes des workflows
 
