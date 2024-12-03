@@ -1,76 +1,76 @@
-# Documentation : Utilisation de la CI/CD pour R-Type
+# Documentation: Using CI/CD for R-Type
 
 ## Introduction
 
-Ce document décrit le fonctionnement du pipeline CI/CD pour le projet **R-Type**, ainsi que les étapes nécessaires pour l'utiliser efficacement.  
-Ce pipeline garantit que le code est compilé, testé et déployé correctement sur les branches suivantes : `dev`, `server`, `engine`, `game`, `graphic` et `main`.
+This document explains the functionality of the CI/CD pipeline for the **R-Type** project, along with the steps necessary for its effective usage.  
+The pipeline ensures that the code is compiled, tested, and deployed correctly on the following branches: `dev`, `server`, `engine`, `game`, `graphic`, and `main`.
 
 ---
 
-## Fonctionnement de la CI/CD
+## CI/CD Functionality
 
-### 1. Déclenchement des workflows
+### 1. Workflow Triggers
 
-Le pipeline CI/CD est déclenché automatiquement dans les cas suivants :
-- Un **push** est effectué sur les branches `dev`, `server`, `engine`, `game`, `graphic` ou `main`.
-- Une **Pull Request** est ouverte vers les branches `dev`, `engine` ou `main`.
+The CI/CD pipeline is automatically triggered in the following cases:
+- A **push** is made to the `dev`, `server`, `engine`, `game`, `graphic`, or `main` branches.
+- A **Pull Request** is opened targeting the `dev`, `engine`, or `main` branches.
 
-### 2. Étapes des workflows
+### 2. Workflow Steps
 
 #### a. Build
 
-- Clone le dépôt à l’aide de l’action `actions/checkout@v3`.
-- Installe les dépendances requises :
+- Clones the repository using the `actions/checkout@v3` action.
+- Installs the required dependencies:
   - **CMake**
   - **Boost**
   - **CTest**
-- Crée un répertoire `build` et compile le projet à l'aide de **CMake** et **Make**.
+- Creates a `build` directory and compiles the project using **CMake** and **Make**.
 
 #### b. Tests
 
-- Exécute les tests définis dans le fichier `CMakeLists.txt` via `ctest`.
-- Affiche les résultats des tests pour s'assurer que le code fonctionne comme prévu.
+- Runs the tests defined in the `CMakeLists.txt` file using `ctest`.
+- Displays the test results to ensure the code works as expected.
 
-#### c. Déploiement
+#### c. Deployment
 
-- Répète l'installation des dépendances.
-- Déploie le projet dans un conteneur **Docker**.
-
----
-
-## Gestion des erreurs
-
-Si une étape du pipeline (Build, Tests ou Deploy) échoue :
-- Le **push** ou le **merge** est automatiquement annulé.
-- Vous devez corriger les erreurs et réessayer.
-- Les **logs** indiquant quel test ou étape a échoué sont accessibles dans l'onglet **Actions** de votre dépôt GitHub.
+- Reinstalls the required dependencies.
+- Deploys the project in a **Docker** container.
 
 ---
 
-## Étapes pour utiliser le pipeline
+## Error Management
 
-1. Ajouter du code ou des modifications.
-2. Créer un commit.
-3. Pousser les modifications sur votre branche.
-4. Créer une **Pull Request** vers `dev`, `engine` ou `main`.
-5. Si toutes les étapes (Build, Tests, Deploy) réussissent, le **push**, la **Pull Request** ou le **merge** sera validé.
+If any step in the pipeline (Build, Tests, or Deploy) fails:
+- The **push** or **merge** is automatically canceled.
+- You must fix the errors and retry.
+- **Logs** detailing which test or step failed are accessible in the **Actions** tab of your GitHub repository.
 
 ---
 
-## Exemple de fichier `CMakeLists.txt`
+## Steps to Use the Pipeline
+
+1. Add code or modifications.
+2. Create a commit.
+3. Push the changes to your branch.
+4. Create a **Pull Request** targeting `dev`, `engine`, or `main`.
+5. If all steps (Build, Tests, Deploy) succeed, the **push**, **Pull Request**, or **merge** will be validated.
+
+---
+
+## Example of a `CMakeLists.txt` File
 
 ```cmake
 cmake_minimum_required(VERSION 3.10)
 project(RTypeServer)
 
-# Configuration de la version C++
+# C++ version configuration
 set(CMAKE_CXX_STANDARD 17)
 
-# Inclusion de Boost
+# Boost inclusion
 find_package(Boost REQUIRED COMPONENTS system)
 include_directories(${Boost_INCLUDE_DIRS})
 
-# Compilation de l'exécutable principal
+# Main executable compilation
 add_executable(<your_exec> <dir/your_main_file.cpp>)
 target_link_libraries(<your_exec> ${Boost_LIBRARIES})
 
@@ -79,5 +79,5 @@ enable_testing()
 add_executable(<your_test_exec> <dir/file_test.cpp>)
 target_link_libraries(<your_test_exec> ${Boost_LIBRARIES})
 
-# Déclaration des tests
+# Test declaration
 add_test(NAME <give_a_name_for_test> COMMAND <your_test_exec>)
