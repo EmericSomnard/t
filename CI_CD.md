@@ -52,7 +52,7 @@ Si une étape du pipeline (Build, Tests ou Deploy) échoue :
 1. Ajouter du code ou des modifications.
 2. Créer un commit.
 3. Pousser les modifications sur votre branche.
-4. Créer une **Pull Request** vers `dev` ou `main`.
+4. Créer une **Pull Request** vers `dev`, `engine` ou `main`.
 5. Si toutes les étapes (Build, Tests, Deploy) réussissent, le **push**, la **Pull Request** ou le **merge** sera validé.
 
 ---
